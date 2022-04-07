@@ -2,7 +2,7 @@ node {
     stage('Clone') { // for display purposes
         // Clone the configurations repository
         cleanWs()
-        git 'https://github.com/LinkedInLearning/advanced-terraform-2823489.git'   
+        git 'https://github.com/nahuic72/terraform.git'   
     }
     stage('Download') {
         // Download Terraform
@@ -12,7 +12,7 @@ node {
     }
     stage('Backend-Init') {
         // Initialize the Terraform configuration
-        dir('03_01_remotestate/remote_resources') {
+        dir('ejemplo_jenkins/remote_resources') {
             sh script: '../../terraform init -input=false'
         }
         
@@ -21,7 +21,7 @@ node {
         // Create Terraform plan for backend resources
         withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
                         string(credentialsId: 'AWS_SECRET_KEY', variable: 'aws_secret_key')]) {
-            dir('03_01_remotestate/remote_resources') {
+            dir('ejemplo_jenkins/remote_resources') {
                 sh script: '../../terraform plan \
                         -out backend.tfplan \
                         -var="aws_access_key=$aws_access_key" \
@@ -32,7 +32,7 @@ node {
     stage('Backend-Apply') {
         withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
                         string(credentialsId: 'AWS_SECRET_KEY', variable: 'aws_secret_key')]) {
-                            dir('03_01_remotestate/remote_resources') {
+                            dir('ejemplo_jenkins/remote_resources') {
                                 sh script: '../../terraform apply backend.tfplan'
                             }
         }
@@ -40,12 +40,12 @@ node {
     stage('Config-Init') {
         withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
                         string(credentialsId: 'AWS_SECRET_KEY', variable: 'aws_secret_key')]) {
-                            dir('03_01_remotestate') {
+                            dir('ejemplo_jenkins') {
                                 sh script: '../terraform init \
-                                            -backend-config="bucket=red30-tfstate" \
-                                            -backend-config="key=red30/ecommerceapp/app.state" \
+                                            -backend-config="bucket=nahuic-tfstate" \
+                                            -backend-config="key=nahuic/ecommerceapp/app.state" \
                                             -backend-config="region=us-east-2" \
-                                            -backend-config="dynamodb_table=red30-tfstatelock" \
+                                            -backend-config="dynamodb_table=nahuic-tfstatelock" \
                                             -backend-config="access_key=$aws_access_key" \
                                             -backend-config="secret_key=$aws_secret_key"'
                             }
@@ -55,7 +55,7 @@ node {
         // Generate Terraform plan
         withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
                         string(credentialsId: 'AWS_SECRET_KEY', variable: 'aws_secret_key')]) {
-                            dir('03_01_remotestate') {
+                            dir('ejemplo_jenkins') {
                                 sh script: '../terraform plan \
                                             -out s1.tfplan \
                                             -var="aws_access_key=$aws_access_key" \
@@ -67,7 +67,7 @@ node {
         // Apply the configuration
         withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
                         string(credentialsId: 'AWS_SECRET_KEY', variable: 'aws_secret_key')]) {
-                            dir('03_01_remotestate') {
+                            dir('ejemplo_jenkins') {
                                 sh script: '../terraform apply s1.tfplan'
                             }
         }
