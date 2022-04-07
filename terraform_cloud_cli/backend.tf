@@ -1,9 +1,9 @@
 terraform {
   backend "remote" {
-    organization = "getapptitude"
+    organization = "getalearning"
 
     workspaces {
-      name = "terraform1"
+      name = "terraform"
     }
   }
 }
