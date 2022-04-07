@@ -1,6 +1,6 @@
 terraform {
   backend "remote" {
-    organization = "getalearning"
+    organization = "learning-terra1000"
 
     workspaces {
       name = "terraform"
