@@ -1,7 +1,0 @@
-terraform init \
-    -backend-config="bucket=nahuic-tfstate" \
-    -backend-config="key=nahuic/ecommerceapp/app.state" \
-    -backend-config="region=us-east-2" \
-    -backend-config="dynamodb_table=nahuic-tfstatelock" \
-    -backend-config="access_key={ACCESS_KEY}" \
-    -backend-config="secret_key={SECRET_KEY}"
